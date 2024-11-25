@@ -15,7 +15,9 @@ class Database():
         return json_data
     
     def get_all_data_db(self):
-        print(self.db_data)
+        for row, data in enumerate(self.db_data):
+            print(f'{row + 1} - id: {data.get('id')}, title: {data.get('title')}, author: {data.get('author')}, year: {data.get('year')}, status: {data.get('status')}')
+        
 
     def get_new_id(self):
         if len(self.db_data) == 0:
