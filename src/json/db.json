@@ -1,0 +1,65 @@
+[
+    {
+        "id": 1,
+        "title": "wqeqw",
+        "author": "qwrqwr",
+        "year": "1234",
+        "status": "in_stock"
+    },
+    {
+        "id": 2,
+        "title": "fasdf",
+        "author": "fdsad",
+        "year": "1234",
+        "status": "in_stock"
+    },
+    {
+        "id": 3,
+        "title": "sdf",
+        "author": "adgg",
+        "year": "3212",
+        "status": "in_stock"
+    },
+    {
+        "id": 4,
+        "title": "fdsg",
+        "author": "agdd",
+        "year": "3234",
+        "status": "in_stock"
+    },
+    {
+        "id": 5,
+        "title": "gdgadg",
+        "author": "xcfgag",
+        "year": "2343",
+        "status": "in_stock"
+    },
+    {
+        "id": 6,
+        "title": "afdgs",
+        "author": "adg",
+        "year": "2345",
+        "status": "in_stock"
+    },
+    {
+        "id": 7,
+        "title": "afasf",
+        "author": "asfgsg",
+        "year": "1234",
+        "status": "in_stock"
+    },
+    {
+        "id": 8,
+        "title": "sdf",
+        "author": "gdsgf",
+        "year": "2345",
+        "status": "in_stock"
+    },
+    {
+        "id": 9,
+        "title": "fafsg",
+        "author": "asffsa",
+        "year": "1234",
+        "status": "in_stock"
+    }
+]
