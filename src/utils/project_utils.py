@@ -49,13 +49,23 @@ class Database():
         print(f'Book added\nid: {new_id}\ntitle: {data.get('title')}\nauthor: {data.get('author')}\nyear: {data.get('year')}\nstatus: in_stock')
         print()
 
-    def get_search_data(self, searhc_key='title'):
-        input_search_data = input('Enter search data: ')
+    def get_search_data(self, search_data, searhc_key='title'):
         print('Search result:')
         for row, data in enumerate(self.db_data):
-            if data[searhc_key] == input_search_data:
+            if data[searhc_key] == search_data:
                 print(f'{row + 1} - id: {data.get('id')}, title: {data.get('title')}, author: {data.get('author')}, year: {data.get('year')}, status: {data.get('status')}')
+                if searhc_key == 'id':
+                    return data
         print()
+
+    def get_del_data(self, data_id):
+        del_data = self.get_search_data(search_data=data_id, searhc_key='id')
+        return del_data
+    
+    def del_select_data(self, data):
+        self.db_data.remove(data)
+        self.add_new_data()
+        print(f'The book with ID={data.get('id')} has been deleted.')
 
 
 class Utils(Database):
@@ -120,6 +130,9 @@ class Utils(Database):
             commands = self.get_search_commands()
         return next((item for item in commands if item['name'] == command or item['id'] == command), False)
     
+    def error_command(self, command):
+        print(f'{command.upper()} The command is incorrect. Select the desired command from the list of commands.')
+    
     def search_data(self):
         while True:
             self.print_commands(command_type=2)
@@ -131,13 +144,39 @@ class Utils(Database):
                 search_type = ['1', '2', '3']
                 if search_command_data.get('id') in search_type:
                     print(search_command_data.get('name'))
-                    self.get_search_data(searhc_key=search_command_data.get('type'))
+                    input_search_data = input('Enter search data: ')
+                    self.get_search_data(searhc_key=search_command_data.get('type'), search_data=input_search_data)
+                    print('Search result:')
                 elif search_command_data.get('id') == '4':
                     print(search_command_data.get('name'))
                     break
             else:
+                self.error_command(command=command)
+
+    def check_selection_result(self, selection_result):
+        if selection_result == 'y' or selection_result == 'n':
+            return True
+        print(f'{selection_result} - Input error. Use y or n.')
+        return False
+        
+    def del_data(self):
+        data_id = input('Enter book ID: ')
+        try:
+            data_id = int(data_id)
+            del_data = self.get_del_data(data_id=data_id)
+            if del_data is not None:
+                while True:
+                    selection_result = input(f'Do you definitely want to delete the book with ID={del_data.get('id')}? y/n: ')
+                    if self.check_selection_result(selection_result=selection_result):
+                        break
+                if selection_result == 'y':
+                    self.del_select_data(data=del_data)
+                print()
+            else:
                 print(False)
-    
+        except:
+            print(f'{data_id} - Errod ID format')
+            print()
     
     def exit(self):
         exit()
@@ -177,11 +216,14 @@ class Utils(Database):
                     if year:
                         break
                 self.create_new_data(data={'title': title, 'author': author, 'year': year})   
+            elif command_data.get('id') == '4':
+                print(command_data.get('name'))
+                self.del_data()
             elif command_data.get('id') == '5':
                 print(command_data.get('name'))
                 self.exit()
         else:
-            print(False)
+            self.error_command(command=command)
 
     def request_processing(self):
         command = input('Enter command: ')
