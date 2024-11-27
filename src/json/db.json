@@ -1,16 +1,9 @@
 [
     {
-        "id": 3,
-        "title": "asdasd",
-        "author": "asdasd",
-        "year": "2345",
-        "status": "issued"
-    },
-    {
-        "id": 4,
-        "title": "dgdafhfaf",
-        "author": "adfafhafh",
-        "year": "3454",
+        "id": 1,
+        "title": "\u0432\u044b\u0430\u044b\u0432\u0430\u0432\u044b\u0430",
+        "author": "\u044b\u0432\u043f\u043f\u044b\u043f",
+        "year": "2342",
         "status": "in_stock"
     }
 ]

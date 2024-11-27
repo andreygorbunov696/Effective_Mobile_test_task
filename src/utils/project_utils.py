@@ -3,6 +3,7 @@ import json
 
 class Database():
     def get_or_create_db(self, db_name='db'):
+    # Function: get_or_create_db - Проверка существования файла JSON. Если нет, создать его.
         if os.path.exists(f"json/{db_name}.json"):
             try:
                 with open(f'json/{db_name}.json') as json_file:
@@ -20,20 +21,24 @@ class Database():
         return json_data
     
     def get_all_data_db(self):
+    # Function: get_all_data_db - Вывод на экран всех книг из файла JSON.
         for row, data in enumerate(self.db_data):
             print(f'{row + 1} - id: {data.get('id')}, title: {data.get('title')}, author: {data.get('author')}, year: {data.get('year')}, status: {data.get('status')}')
         print()
 
     def get_new_id(self):
+    # Function: get_new_id - Генерация нового ID для записи.
         if len(self.db_data) == 0:
             return 1
         return int(self.db_data[-1].get('id')) + 1 
     
     def add_new_data(self, db_name='db'):
+    # Function: add_new_data - Запись новых или изменённых данных в JSON.
         with open(f'json/{db_name}.json', 'w') as json_file:
             json.dump(self.db_data, json_file, indent=4)
 
     def create_new_data(self, data):
+    # Function: create_new_data - Генерация новой структуры данных для книги и добавление данных в JSON. Вывод результата на экран.
         new_id = self.get_new_id()
         self.db_data.append(
             {
@@ -50,6 +55,7 @@ class Database():
         print()
 
     def get_search_data(self, search_data, searhc_key='title'):
+    # Function: get_search_data - Обработка запроса поиска книг и вывод результата на экран.
         print('Search result:')
         for row, data in enumerate(self.db_data):
             if data[searhc_key] == search_data:
@@ -59,10 +65,12 @@ class Database():
         print()
 
     def get_data_by_id(self, data_id):
+    # Function: get_data_by_id - Обрабртка запроса получение данных по ID.
         del_data = self.get_search_data(search_data=data_id, searhc_key='id')
         return del_data
     
     def find_data_index(self, data):
+    # Function: find_data_index - Поиск индкса записи и обработка ошибки существования данных.
         try:
             index = self.db_data.index(data)
             return {
@@ -74,6 +82,7 @@ class Database():
             return {'status': False}
         
     def change_status(self, data, data_index):
+    # Function: change_status - Обработка запроса на изменения статуса.
         print(f'Old status: {data.get('status')}')
         if data.get('status') == 'in_stock':
             data['status'] = 'issued'
@@ -83,6 +92,8 @@ class Database():
         self.db_data[data_index] = data
     
     def del_or_change_status_select_data(self, data, action_type=1):
+    # Function: del_or_change_status_select_data - Обработка запроса на удаление или изменение статуса после согласия на действия. 
+    # Удалить данные или изменить статус, после обновить данные в JSON.
         if action_type == 1:
             self.db_data.remove(data)
             print(f'The book with ID={data.get('id')} has been deleted.')
@@ -94,6 +105,7 @@ class Database():
 
 class Utils(Database):
     def get_commands(self):
+    # Function: get_commands - Список команд для основного меню.
         return [
             {
                 'id': '1',
@@ -118,6 +130,7 @@ class Utils(Database):
         ]
     
     def get_search_commands(self):
+    # Function: get_search_commands - Список команд для раздела "Book search".
         return [
             {
                 'id': '1',
@@ -141,6 +154,7 @@ class Utils(Database):
         ]
 
     def print_commands(self, command_type=1):
+    # Function: print_commands - Вывод на экран команд меню.
         if command_type == 1:
             print('Commands:')
             commands = self.get_commands()
@@ -151,6 +165,7 @@ class Utils(Database):
             print(f'{command.get('id')} or {command.get('name')}')
 
     def get_command_data(self, command, command_type=1):
+    # Function: get_command_data - Получения списка команд в зависимости от пункта меню.
         if command_type == 1:
             commands = self.get_commands()
         if command_type == 2:
@@ -158,9 +173,11 @@ class Utils(Database):
         return next((item for item in commands if item['name'] == command or item['id'] == command), False)
     
     def error_command(self, command):
+    # Function: error_command - Вывод сообшение об ошибки ввода неверной команды в меню.
         print(f'{command.upper()} The command is incorrect. Select the desired command from the list of commands.')
     
     def search_data(self):
+    # Function: search_data - Обработка команды "Book search".
         while True:
             self.print_commands(command_type=2)
             command = input('Enter command: ')
@@ -181,12 +198,14 @@ class Utils(Database):
                 self.error_command(command=command)
 
     def check_selection_result(self, selection_result):
+    # Function: check_selection_result - Обработка запроса ошибки команды на согласие удалить или изменить статус.
         if selection_result == 'y' or selection_result == 'n':
             return True
         print(f'{selection_result} - Input error. Use y or n.')
         return False
     
     def actions_with_data(self, action_type=1):
+    # Function: actions_with_data - Обработка запроса над действиями с данными (удаление, изменение статуса).
         data_id = input('Enter book ID: ')
         try:
             data_id = int(data_id)
@@ -210,18 +229,23 @@ class Utils(Database):
             print()
         
     def del_data(self):
+    # Function: del_data - Обработка запроса на удаление данных.
         self.actions_with_data(action_type=1)
 
     def changing_status(self):
+    # Function: changing_status - Обработка запроса на изменение статуса.
         self.actions_with_data(action_type=2)
 
     def exit(self):
+    # Function: exit - Обработка запроса на выход из пртложения.
         exit()
     
     def get_all_data(self):
+    # Function: get_all_data - Обработка выбора в меню "Display all books".
         self.get_all_data_db()
 
     def add_year(self):
+    # Function: add_year - Обработка ввода даты (год) и проверка проавильного формата даты.
         year = input('Enter book year (yyyy): ')
         try:
             if len(year) != 4:
@@ -234,6 +258,7 @@ class Utils(Database):
             return False
 
     def get_requst(self, command):
+    # Function: get_requst - Обработка команд основного меню.
         command = command.capitalize() 
         command_data = self.get_command_data(command=command)
         print() 
@@ -266,6 +291,7 @@ class Utils(Database):
             self.error_command(command=command)
 
     def request_processing(self):
+    # Function: request_processing - Выбор команд основного меню.
         command = input('Enter command: ')
         self.get_requst(command=command)
 
