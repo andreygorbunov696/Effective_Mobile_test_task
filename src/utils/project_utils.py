@@ -58,15 +58,39 @@ class Database():
                     return data
         print()
 
-    def get_del_data(self, data_id):
+    def get_data_by_id(self, data_id):
         del_data = self.get_search_data(search_data=data_id, searhc_key='id')
         return del_data
     
-    def del_select_data(self, data):
-        self.db_data.remove(data)
+    def find_data_index(self, data):
+        try:
+            index = self.db_data.index(data)
+            return {
+                'index': index,
+                'status': True
+            }
+        except ValueError:
+            print("Item is not in the list")
+            return {'status': False}
+        
+    def change_status(self, data, data_index):
+        print(f'Old status: {data.get('status')}')
+        if data.get('status') == 'in_stock':
+            data['status'] = 'issued'
+        else:
+            data['status'] = 'in_stock'
+        print(f'New status: {data.get('status')}')
+        self.db_data[data_index] = data
+    
+    def del_or_change_status_select_data(self, data, action_type=1):
+        if action_type == 1:
+            self.db_data.remove(data)
+            print(f'The book with ID={data.get('id')} has been deleted.')
+        elif action_type == 2:
+            index = self.find_data_index(data)
+            if index.get('status'):
+                self.change_status(data=data, data_index=index.get('index'))
         self.add_new_data()
-        print(f'The book with ID={data.get('id')} has been deleted.')
-
 
 class Utils(Database):
     def get_commands(self):
@@ -86,6 +110,9 @@ class Utils(Database):
                 'name': 'Deleting a book'
             },
             {   'id': '5',
+                'name': 'Changing status',
+            },
+            {   'id': '6',
                 'name': 'Exit',
             },
         ]
@@ -158,26 +185,36 @@ class Utils(Database):
             return True
         print(f'{selection_result} - Input error. Use y or n.')
         return False
-        
-    def del_data(self):
+    
+    def actions_with_data(self, action_type=1):
         data_id = input('Enter book ID: ')
         try:
             data_id = int(data_id)
-            del_data = self.get_del_data(data_id=data_id)
-            if del_data is not None:
+            data_by_id = self.get_data_by_id(data_id=data_id)
+            if data_by_id is not None:
                 while True:
-                    selection_result = input(f'Do you definitely want to delete the book with ID={del_data.get('id')}? y/n: ')
+                    if action_type == 1:
+                        selection_result = input(f'Are you sure you want to delete a book with an ID={data_by_id.get('id')}? y/n: ')
+                    elif action_type == 2:
+                        selection_result = input(f'Are you sure you want to change the status of a book with an ID={data_by_id.get('id')}? y/n: ')
                     if self.check_selection_result(selection_result=selection_result):
                         break
                 if selection_result == 'y':
-                    self.del_select_data(data=del_data)
+                        self.del_or_change_status_select_data(data=data_by_id, action_type=action_type)
                 print()
             else:
-                print(False)
+                print(f'Books with id={data_id} do not exist')
+                print()
         except:
             print(f'{data_id} - Errod ID format')
             print()
-    
+        
+    def del_data(self):
+        self.actions_with_data(action_type=1)
+
+    def changing_status(self):
+        self.actions_with_data(action_type=2)
+
     def exit(self):
         exit()
     
@@ -220,6 +257,9 @@ class Utils(Database):
                 print(command_data.get('name'))
                 self.del_data()
             elif command_data.get('id') == '5':
+                print(command_data.get('name'))
+                self.changing_status()
+            elif command_data.get('id') == '6':
                 print(command_data.get('name'))
                 self.exit()
         else:

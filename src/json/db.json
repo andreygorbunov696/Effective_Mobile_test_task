@@ -1,17 +1,10 @@
 [
     {
-        "id": 2,
-        "title": "Afafsasf",
-        "author": "safasf",
-        "year": "2343",
-        "status": "in_stock"
-    },
-    {
         "id": 3,
         "title": "asdasd",
         "author": "asdasd",
         "year": "2345",
-        "status": "in_stock"
+        "status": "issued"
     },
     {
         "id": 4,
